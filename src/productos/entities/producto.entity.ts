@@ -16,7 +16,7 @@ export class Producto {
     /* @Column({nullable: true })
     marca: string; */
 
-    @Column()
+    @Column({nullable: true })
     proveedor: string;
 
     @Column()
@@ -43,8 +43,3 @@ export class Producto {
     marca: Marca;  //se le pasa la entidad completa
 }
 
-
-
-/* export enum DateProducto {
-    DATE = Date.now()
-} */

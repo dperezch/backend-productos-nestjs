@@ -8,8 +8,10 @@ export class Marca {
     id: number;
 
     @Column({length: 50})
-    name: string;
+    nombre: string;
 
+    //RELACIONES
+    
     @OneToMany(()=> Producto, (producto)=> producto.marca)
     productos: Producto[];
 }

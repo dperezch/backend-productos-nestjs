@@ -11,7 +11,6 @@ export class CreateProductoDto {
 
     @IsString()
     @MinLength(2)
-    @IsOptional()
     marca: string;
 
     @IsString()

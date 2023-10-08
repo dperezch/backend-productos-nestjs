@@ -4,6 +4,8 @@ import { UpdateProductoDto } from './dto/update-producto.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Producto } from './entities/producto.entity';
 import { Repository } from 'typeorm';
+import { Marca } from 'src/marcas/entities/marca.entity';
+
 
 @Injectable()
 export class ProductosService {
@@ -11,7 +13,11 @@ export class ProductosService {
   constructor(
 
     @InjectRepository(Producto)
-    private readonly productoRepository: Repository<Producto>
+    private readonly productosRepository: Repository<Producto>,
+
+    @InjectRepository(Marca)
+    private readonly marcasRepository: Repository<Marca>
+
   ){}
 
   async create(createProductoDto: CreateProductoDto) {
@@ -27,49 +33,87 @@ export class ProductosService {
     }
 
     // Busca un producto existente con el mismo sku y fecha_vencimiento
-    const existingProduct = await this.productoRepository.findOne({
+    const existingProduct = await this.productosRepository.findOne({
       where: {
         sku: createProductoDto.sku,
         fecha_vencimiento: createProductoDto.fecha_vencimiento,
       },
     });
 
+    // Verifica la marca
+    const marca =  await this.marcasRepository.findOneBy({
+      nombre: createProductoDto.marca,
+    })
+
+    //si no existe la marca, lanza error
+    if(!marca) {
+      throw new BadRequestException('Marca no encontrada');
+    }
+
+    //crea el producto
+    const producto = this.productosRepository.create({
+      ...createProductoDto,
+      marca
+    })
+
     if (existingProduct) {
       // Si el producto existe, actualiza los datos
       existingProduct.cantidad += createProductoDto.cantidad;
       existingProduct.nombre = createProductoDto.nombre;
-      existingProduct.marca = createProductoDto.marca;
+      existingProduct.marca = marca;
       existingProduct.proveedor = createProductoDto.proveedor;
       existingProduct.precio_venta = createProductoDto.precio_venta;
       existingProduct.precio_compra = createProductoDto.precio_compra;
-      return await this.productoRepository.save(existingProduct);
+      return await this.productosRepository.save(existingProduct);
     } else {
       // Si el producto no existe, crea uno nuevo
-      const producto = this.productoRepository.create(createProductoDto);
-      return await this.productoRepository.save(producto);
+      return await this.productosRepository.save(producto);
     }
   }
 
   async findAll() {
-    return await this.productoRepository.find();
+    return await this.productosRepository.find();
   }
 
   async findOne(id: number) {
-    return await this.productoRepository.findOneBy({id});
+    return await this.productosRepository.findOneBy({id});
   }
 
   async findBySku(sku: number) {
-    return await this.productoRepository
+    return await this.productosRepository
       .createQueryBuilder('producto')
       .where('producto.sku = :sku', { sku })
       .getMany();
   }
 
   async update(id: number, updateProductoDto: UpdateProductoDto) {
-    return await this.productoRepository.update({id}, updateProductoDto)
+    //Busca si existe el producto
+    const producto = await this.productosRepository.findOneBy({id});
+
+    //Si no existe lanza error
+    if (!producto) throw new BadRequestException('Producto no existe')
+
+    let marca;
+    // comprueba si se agregó una marca en la actualización y luego si existe en la tabla marcas, sino lanza error
+    if(updateProductoDto.marca){
+      marca = await this.marcasRepository.findOneBy({
+        nombre: updateProductoDto.marca,
+      });
+      if(!marca) throw new BadRequestException('Marca no encontrada')
+    }
+
+    //agrega toda la información del producto perteneciente al id, luego agrega y sobreescribe los datos enviados en la actualización
+    // y por último agrega o sobreescribe la marca si es que existió
+
+    return await this.productosRepository.save({
+      ...producto,
+      ...updateProductoDto,
+      marca,
+    })
+
   }
 
   async remove(id: number) {
-    return await this.productoRepository.delete({id});
+    return await this.productosRepository.delete({id});
   }
 }
