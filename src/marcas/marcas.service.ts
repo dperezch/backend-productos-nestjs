@@ -18,15 +18,15 @@ export class MarcasService {
   }
 
   async findAll() {
-    return `This action returns all marcas`;
+    return await this.marcaRepository.find();
   }
 
   async findOne(id: number) {
-    return `This action returns a #${id} marca`;
+    return await this.marcaRepository.findOneBy({id})
   }
 
   async update(id: number, updateMarcaDto: UpdateMarcaDto) {
-    return `This action updates a #${id} marca`;
+    return await this.marcaRepository.update({id}, updateMarcaDto)
   }
 
   async remove(id: number) {
