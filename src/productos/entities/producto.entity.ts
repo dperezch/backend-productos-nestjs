@@ -1,4 +1,5 @@
 import { Marca } from "src/marcas/entities/marca.entity";
+import { Proveedor } from "src/proveedores/entities/proveedore.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -12,12 +13,6 @@ export class Producto {
 
     @Column()
     nombre: string;
-
-    /* @Column({nullable: true })
-    marca: string; */
-
-    @Column({nullable: true })
-    proveedor: string;
 
     @Column()
     cantidad: number;
@@ -41,5 +36,12 @@ export class Producto {
         eager: true // para que traiga la marca al hacer un findOne
     })
     marca: Marca;  //se le pasa la entidad completa
+
+    @ManyToOne(()=> Proveedor,(proveedor)=> proveedor.id, {
+        nullable: true,
+        eager: true // para que traiga el proveedor al hacer un findOne
+    })
+    proveedor: Proveedor;
+
 }
 

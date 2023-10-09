@@ -10,11 +10,10 @@ export class CreateProductoDto {
     nombre: string;
 
     @IsString()
-    @MinLength(2)
+    @IsOptional()
     marca: string;
 
     @IsString()
-    @MinLength(2)
     @IsOptional()
     proveedor: string;
 
