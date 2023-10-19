@@ -22,11 +22,16 @@ export class AuthService {
             throw new BadRequestException('User already exists');
         }
 
-        return await this.usersService.create({
+        await this.usersService.create({
             name,
             email, 
             password: await bcryptjs.hash(password, 10)
         })
+
+        return {
+            name,
+            email,
+        };
 
     }
 
@@ -39,6 +44,26 @@ export class AuthService {
 
         if(!isPasswordValid) throw new UnauthorizedException('contraseña incorrecta');
 
-        return user;
+        //JWT token
+
+        const payload = {email: user.email, role: user.role};
+
+        const token = await this.jwtService.signAsync(payload);
+
+
+        return {
+            token,
+            email,
+        }
+    }
+
+    async profile({email, role}: {email:string, role:string}){
+
+        //Esto se repetira muchas veces, crear decorador personalizad en carpeta decorators
+        /* if(role!== 'admin'){
+            throw new UnauthorizedException('You are not allowed to');
+        } */
+
+        return await this.usersService.findOneByEmail(email);
     }
 }
