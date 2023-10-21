@@ -6,6 +6,7 @@ import { Producto } from './entities/producto.entity';
 import { Repository } from 'typeorm';
 import { Marca } from 'src/marcas/entities/marca.entity';
 import { Proveedor } from 'src/proveedores/entities/proveedore.entity';
+import { Categoria } from 'src/categorias/entities/categoria.entity';
 
 
 @Injectable()
@@ -20,7 +21,10 @@ export class ProductosService {
     private readonly marcasRepository: Repository<Marca>,
 
     @InjectRepository(Proveedor)
-    private readonly proveedoresRepository: Repository<Proveedor>
+    private readonly proveedoresRepository: Repository<Proveedor>,
+
+    @InjectRepository(Categoria)
+    private readonly categoriasRepository: Repository<Categoria>,
 
   ){}
 
@@ -44,6 +48,8 @@ export class ProductosService {
       },
     });
 
+    //RELACIONES CON LAS DEMAS TABLAS
+
     // Verifica la marca
     const marca =  await this.marcasRepository.findOneBy({
       nombre: createProductoDto.marca,
@@ -64,10 +70,21 @@ export class ProductosService {
       throw new BadRequestException('Proveedor no encontrado')
     }
 
+    //verifica la categoria
+    const categoria = await this.categoriasRepository.findOneBy({
+      nombre: createProductoDto.categoria,
+    })
+
+    //si no existe la categoria, lanza error
+    if(!categoria){
+      throw new BadRequestException('Categoria no encontrada')
+    }
+
     //crea el producto
     const producto = this.productosRepository.create({
       ...createProductoDto,
       marca,
+      categoria,
       proveedor
     })
 
@@ -76,6 +93,7 @@ export class ProductosService {
       existingProduct.cantidad += createProductoDto.cantidad;
       existingProduct.nombre = createProductoDto.nombre;
       existingProduct.marca = marca;
+      existingProduct.categoria = categoria;
       existingProduct.proveedor = proveedor;
       existingProduct.precio_venta = createProductoDto.precio_venta;
       existingProduct.precio_compra = createProductoDto.precio_compra;
@@ -109,6 +127,7 @@ export class ProductosService {
     if (!producto) throw new BadRequestException('Producto no existe')
 
     let marca;
+    let categoria;
     let proveedor;
     // comprueba si se agregó una marca en la actualización y luego si existe en la tabla marcas, sino lanza error
     if(updateProductoDto.marca){
@@ -116,6 +135,14 @@ export class ProductosService {
         nombre: updateProductoDto.marca,
       });
       if(!marca) throw new BadRequestException('Marca no encontrada')
+    }
+
+    // Comprueba si se agrego una categoria en la actualización y luego si existe en la tabla categoria, sino lanza error
+    if(updateProductoDto.categoria){
+      categoria = await this.categoriasRepository.findOneBy({
+        nombre: updateProductoDto.categoria,
+      });
+      if(!categoria) throw new BadRequestException('Categoria no encontrada')
     }
 
     // Comprueba si se agrego un proveedor en la actualización y luego si existe en la tabla proveedor, sino lanza error
@@ -133,6 +160,7 @@ export class ProductosService {
       ...producto,
       ...updateProductoDto,
       marca,
+      categoria,
       proveedor
     })
 

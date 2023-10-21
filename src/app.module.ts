@@ -5,6 +5,7 @@ import { MarcasModule } from './marcas/marcas.module';
 import { ProveedoresModule } from './proveedores/proveedores.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { CategoriasModule } from './categorias/categorias.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { AuthModule } from './auth/auth.module';
     MarcasModule,
     ProveedoresModule,
     UsersModule,
-    AuthModule
+    AuthModule,
+    CategoriasModule
   ],
   controllers: [],
   providers: [],

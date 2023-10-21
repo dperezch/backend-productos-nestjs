@@ -15,6 +15,10 @@ export class CreateProductoDto {
 
     @IsString()
     @IsOptional()
+    categoria: string;
+
+    @IsString()
+    @IsOptional()
     proveedor: string;
 
     @IsInt()

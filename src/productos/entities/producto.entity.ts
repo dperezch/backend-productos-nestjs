@@ -1,3 +1,4 @@
+import { Categoria } from "src/categorias/entities/categoria.entity";
 import { Marca } from "src/marcas/entities/marca.entity";
 import { Proveedor } from "src/proveedores/entities/proveedore.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
@@ -42,6 +43,13 @@ export class Producto {
         eager: true // para que traiga el proveedor al hacer un findOne
     })
     proveedor: Proveedor;
+
+    @ManyToOne(()=> Categoria, (categoria)=> categoria.id, {
+        nullable: true,
+        eager: true // para que traiga la categoria al hacer un findOne
+    })
+    categoria: Categoria;
+
 
 }
 

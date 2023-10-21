@@ -1,6 +1,6 @@
 import { IsString, MinLength } from "class-validator";
 
-export class CreateMarcaDto {
+export class CreateCategoriaDto {
 
     @IsString()
     @MinLength(2)
