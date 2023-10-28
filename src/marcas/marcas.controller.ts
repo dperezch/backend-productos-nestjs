@@ -4,7 +4,10 @@ import { CreateMarcaDto } from './dto/create-marca.dto';
 import { UpdateMarcaDto } from './dto/update-marca.dto';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Role } from 'src/common/enums/rol.enum';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Marcas')
+@ApiBearerAuth()
 @Auth(Role.ADMIN)
 @Controller('marcas')
 export class MarcasController {

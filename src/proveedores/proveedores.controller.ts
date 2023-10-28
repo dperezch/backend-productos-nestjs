@@ -4,7 +4,10 @@ import { CreateProveedoreDto } from './dto/create-proveedore.dto';
 import { UpdateProveedoreDto } from './dto/update-proveedore.dto';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Role } from 'src/common/enums/rol.enum';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Proveedores')
+@ApiBearerAuth()
 @Auth(Role.ADMIN)
 @Controller('proveedores')
 export class ProveedoresController {

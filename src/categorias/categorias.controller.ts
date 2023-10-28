@@ -4,7 +4,10 @@ import { CreateCategoriaDto } from './dto/create-categoria.dto';
 import { UpdateCategoriaDto } from './dto/update-categoria.dto';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Role } from 'src/common/enums/rol.enum';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Categorias')
+@ApiBearerAuth()
 @Auth(Role.ADMIN)
 @Controller('categorias')
 export class CategoriasController {
