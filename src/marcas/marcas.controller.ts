@@ -8,31 +8,35 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Marcas')
 @ApiBearerAuth()
-@Auth(Role.ADMIN)
 @Controller('marcas')
 export class MarcasController {
   constructor(private readonly marcasService: MarcasService) {}
 
+  @Auth(Role.ADMIN)
   @Post()
   create(@Body() createMarcaDto: CreateMarcaDto) {
     return this.marcasService.create(createMarcaDto);
   }
 
+  @Auth(Role.USER)
   @Get()
   findAll() {
     return this.marcasService.findAll();
   }
 
+  @Auth(Role.USER)
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.marcasService.findOne(id);
   }
 
+  @Auth(Role.ADMIN)
   @Patch(':id')
   update(@Param('id') id: number, @Body() updateMarcaDto: UpdateMarcaDto) {
     return this.marcasService.update(id, updateMarcaDto);
   }
 
+  @Auth(Role.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.marcasService.remove(id);
