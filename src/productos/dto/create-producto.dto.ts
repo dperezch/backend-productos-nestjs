@@ -2,8 +2,8 @@ import { IsDate, IsInt, IsOptional, IsPositive, IsString, MinLength, } from "cla
 
 export class CreateProductoDto {
 
-    @IsInt()
-    sku: number;
+    @IsString()
+    sku: string;
 
     @IsString()
     @MinLength(2)

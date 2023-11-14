@@ -9,8 +9,8 @@ export class Producto {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    sku: number;
+    @Column({type: 'bigint'})
+    sku: string;
 
     @Column()
     nombre: string;
