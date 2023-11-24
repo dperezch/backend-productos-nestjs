@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CategoriasModule } from './categorias/categorias.module';
 import { ConfigModule } from '@nestjs/config';
+import { VentaDiariaModule } from './venta_diaria/venta_diaria.module';
 
 @Module({
   imports: [
@@ -37,7 +38,8 @@ import { ConfigModule } from '@nestjs/config';
     ProveedoresModule,
     UsersModule,
     AuthModule,
-    CategoriasModule
+    CategoriasModule,
+    VentaDiariaModule
   ],
   controllers: [],
   providers: [],
